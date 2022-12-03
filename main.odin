@@ -38,6 +38,7 @@ main :: proc() {
     days := map[string]day_proc {
         "d01" = d01,
         "d02" = d02,
+        "d03" = d03,
     }; defer delete(days);
 
     iter := 1;
