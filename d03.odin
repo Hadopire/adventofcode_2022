@@ -10,7 +10,7 @@ char_to_bit_idx: [256]byte = {
     'N'=40,'O'=41,'P'=42,'Q'=43,'R'=44,'S'=45,'T'=46,'U'=47,'V'=48,'W'=49,'X'=50,'Y'=51,'Z'=52,
 }
 
-to_bitset :: proc(str: string) -> (bitset : u64){
+to_bitset :: proc(str: []u8) -> (bitset : u64){
     for char in str do bitset |= (1 << char_to_bit_idx[char]);
     return;    
 }
@@ -22,8 +22,8 @@ d03 :: proc(content: string) -> (u64, u64) {
         if len(line) == 0 do break;
 
         half_length := len(line) / 2; 
-        a := to_bitset(line[:half_length]);
-        b := to_bitset(line[half_length:]);
+        a := to_bitset(transmute([]u8)line[:half_length]);
+        b := to_bitset(transmute([]u8)line[half_length:]);
         first += intrinsics.count_trailing_zeros(a & b);
     }
 
@@ -34,9 +34,9 @@ d03 :: proc(content: string) -> (u64, u64) {
         second_line, _ := strings.split_lines_iterator(&it);
         third_line, _ := strings.split_lines_iterator(&it);
 
-        a := to_bitset(first_line);
-        b := to_bitset(second_line);
-        c := to_bitset(third_line);
+        a := to_bitset(transmute([]u8)first_line);
+        b := to_bitset(transmute([]u8)second_line);
+        c := to_bitset(transmute([]u8)third_line);
         second += intrinsics.count_trailing_zeros(a & b & c);
     }
 
