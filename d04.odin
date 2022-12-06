@@ -3,7 +3,7 @@ package aoc
 import "core:strings"
 import "core:strconv"
 
-d04 :: proc(content: string) -> (u64, u64) {
+d04 :: proc(content: string) -> (result_t, result_t) {
     first, second : u64;
     
     it := content;

@@ -4,11 +4,9 @@ import "core:strings"
 import "core:strconv"
 import "core:slice"
 
-d01 :: proc(content: string) -> (u64, u64) {
+d01 :: proc(content: string) -> (result_t, result_t) {
     lines := strings.split_lines(content);
     calories := make([dynamic]u64);
-    defer delete(lines);
-    defer delete(calories);
     
     for i := 0; i < len(lines); i += 1 {
         sum : u64 = 0;

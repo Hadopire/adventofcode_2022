@@ -10,9 +10,8 @@ to_play :: proc(them : u64, result : u64) -> u64 {
     return (3 + them + (result - 1)) % 3;
 }
 
-d02 :: proc(content: string) -> (u64, u64) {
+d02 :: proc(content: string) -> (result_t, result_t) {
     lines := strings.split_lines(content);
-    defer delete(lines);
 
     first, second : u64 = 0, 0;
     for line in lines {

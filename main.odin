@@ -4,23 +4,35 @@ import "core:os"
 import "core:fmt"
 import "core:strings"
 import "core:time"
+import "core:mem"
+import "core:mem/virtual"
 
-day_proc :: proc(string) -> (u64, u64);
+day_proc :: proc(string) -> (result_t, result_t);
+result_t :: union {
+    u64,
+    string
+};
 
-run :: proc(day: string, procedure : day_proc, iter : int = 1) {
+run :: proc(day: string, procedure : day_proc, iter : int = 1) -> f64 {
+    arena : virtual.Arena;
+    prev_allocator : mem.Allocator;
+    
+    assert(virtual.arena_init_growing(&arena) == virtual.Allocator_Error.None);
+    prev_allocator, context.allocator = context.allocator, virtual.arena_allocator(&arena);
+    defer {
+        context.allocator = prev_allocator;
+        virtual.arena_destroy(&arena);
+    };
+    
     filename: string = strings.concatenate({day, ".txt"});
-    defer delete(filename);
-
     content, ok := os.read_entire_file(filename); 
     if !ok {
         fmt.println("Failed to read file ", filename);
-        return;
+        return 0;
     }
-    defer delete(content);
-
 
     acc : f64 = 0.0;
-    part1, part2 : u64;
+    part1, part2 : result_t;
     for i := 0; i < iter; i += 1  {
         stopwatch : time.Stopwatch;
 
@@ -31,7 +43,9 @@ run :: proc(day: string, procedure : day_proc, iter : int = 1) {
         acc += time.duration_milliseconds(stopwatch._accumulation);
     }
 
-    fmt.println(day, " -- ", acc / f64(iter), "ms\n   part 1: ", part1, "\n   part 2: ", part2);
+    average_time := acc / f64(iter);
+    fmt.println(day, " -- ", average_time, "ms\n   part 1: ", part1, "\n   part 2: ", part2);
+    return average_time;
 }
 
 main :: proc() {
@@ -59,9 +73,12 @@ main :: proc() {
         append(&keys, os.args[i]);
     }
 
+    total_time : f64;
     if len(keys) > 0 {
-        for key in keys do run(key, days[key], iter);
+        for key in keys do total_time += run(key, days[key], iter);
     } else {
-        for day, procedure in days do run(day, procedure, iter);
+        for day, procedure in days do total_time += run(day, procedure, iter);
     }
+
+    fmt.println("total - ", total_time, "ms");
 }

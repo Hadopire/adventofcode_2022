@@ -15,7 +15,7 @@ to_bitset :: proc(str: []u8) -> (bitset : u64){
     return;    
 }
 
-d03 :: proc(content: string) -> (u64, u64) {
+d03 :: proc(content: string) -> (result_t, result_t) {
     first, second : u64;
     it := content;
     for line in strings.split_lines_iterator(&it) {
