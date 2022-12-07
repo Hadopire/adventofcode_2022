@@ -10,7 +10,7 @@ import "core:mem/virtual"
 day_proc :: proc(string) -> (result_t, result_t);
 result_t :: union {
     u64,
-    string
+    string,
 };
 
 run :: proc(day: string, procedure : day_proc, iter : int = 1) -> f64 {
@@ -55,6 +55,7 @@ main :: proc() {
         "d03" = d03,
         "d04" = d04,
         "d05" = d05,
+        "d06" = d06,
     }; defer delete(days);
 
     iter := 1;
