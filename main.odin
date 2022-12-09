@@ -9,6 +9,7 @@ import "core:mem/virtual"
 
 day_proc :: proc(string) -> (result_t, result_t);
 result_t :: union {
+    int,
     u64,
     string,
 };
@@ -58,6 +59,7 @@ main :: proc() {
         "d06" = d06,
         "d07" = d07,
         "d08" = d08,
+        "d09" = d09,
     }; defer delete(days);
 
     iter := 1;
