@@ -14,7 +14,7 @@ result_t :: union {
     string,
 };
 
-run :: proc(day: string, procedure : day_proc, iter : int = 1) -> f64 {
+run :: proc(day: string, procedure: day_proc, iter: int = 1) -> f64 {
     arena : virtual.Arena;
     prev_allocator : mem.Allocator;
     
@@ -43,9 +43,27 @@ run :: proc(day: string, procedure : day_proc, iter : int = 1) -> f64 {
 
         acc += time.duration_milliseconds(stopwatch._accumulation);
     }
-
     average_time := acc / f64(iter);
-    fmt.println(day, " -- ", average_time, "ms\n   part 1: ", part1, "\n   part 2: ", part2);
+
+    print_result_t :: proc(result: result_t) {
+        #partial switch in result {
+            case string: {
+                padding := 0;
+                it := result;
+                for line in strings.split_lines_iterator(&it.(string)) {
+                    for i in 0..<padding do fmt.printf(" ");
+                    fmt.println(line);
+                    padding = 11;
+                }
+            }
+            case: fmt.printf("%v\n", result)
+        }
+    }
+
+    fmt.printf("%s -- %fms\n   part 1: ", day, average_time);
+    print_result_t(part1);
+    fmt.printf("   part 2: ");
+    print_result_t(part2);
     return average_time;
 }
 
@@ -60,6 +78,7 @@ main :: proc() {
         "d07" = d07,
         "d08" = d08,
         "d09" = d09,
+        "d10" = d10,
     }; defer delete(days);
 
     iter := 1;
