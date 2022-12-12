@@ -33,12 +33,14 @@ run :: proc(day: string, procedure: day_proc, iter: int = 1) -> f64 {
     }
 
     acc : f64 = 0.0;
+    content_copy := make([]u8, len(content));
     part1, part2 : result_t;
     for i := 0; i < iter; i += 1  {
+        copy(content_copy, content);
         stopwatch : time.Stopwatch;
 
         time.stopwatch_start(&stopwatch);
-        part1, part2 = procedure(string(content));
+        part1, part2 = procedure(string(content_copy));
         time.stopwatch_stop(&stopwatch);
 
         acc += time.duration_milliseconds(stopwatch._accumulation);
@@ -80,6 +82,7 @@ main :: proc() {
         "d09" = d09,
         "d10" = d10,
         "d11" = d11,
+        "d12" = d12,
     }; defer delete(days);
 
     iter := 1;
