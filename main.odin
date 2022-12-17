@@ -15,9 +15,19 @@ result_t :: union {
 };
 
 run :: proc(day: string, procedure: day_proc, iter: int = 1) -> f64 {
+    filename: string = strings.concatenate({day, ".txt"});
+    defer delete(filename)
+
+    content, ok := os.read_entire_file(filename); 
+    if !ok {
+        fmt.println("Failed to read file ", filename);
+        return 0;
+    }
+    defer delete(content);
+
     arena : virtual.Arena;
     prev_allocator : mem.Allocator;
-    
+        
     assert(virtual.arena_init_growing(&arena) == virtual.Allocator_Error.None);
     prev_allocator, context.allocator = context.allocator, virtual.arena_allocator(&arena);
     defer {
@@ -25,17 +35,10 @@ run :: proc(day: string, procedure: day_proc, iter: int = 1) -> f64 {
         virtual.arena_destroy(&arena);
     };
     
-    filename: string = strings.concatenate({day, ".txt"});
-    content, ok := os.read_entire_file(filename); 
-    if !ok {
-        fmt.println("Failed to read file ", filename);
-        return 0;
-    }
-
     acc : f64 = 0.0;
-    content_copy := make([]u8, len(content));
     part1, part2 : result_t;
     for i := 0; i < iter; i += 1  {
+        content_copy := make([]u8, len(content));
         copy(content_copy, content);
         stopwatch : time.Stopwatch;
 
@@ -44,6 +47,7 @@ run :: proc(day: string, procedure: day_proc, iter: int = 1) -> f64 {
         time.stopwatch_stop(&stopwatch);
 
         acc += time.duration_milliseconds(stopwatch._accumulation);
+        if i + 1 != iter do virtual.arena_free_all(&arena);
     }
     average_time := acc / f64(iter);
 
@@ -86,6 +90,7 @@ main :: proc() {
         "d13" = d13,
         "d14" = d14,
         "d15" = d15,
+        "d16" = d16,
     }; defer delete(days);
 
     iter := 1;
