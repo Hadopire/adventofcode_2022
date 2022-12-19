@@ -92,6 +92,7 @@ main :: proc() {
         "d15" = d15,
         "d16" = d16,
         "d17" = d17,
+        "d18" = d18,
     }; defer delete(days);
 
     iter := 1;
