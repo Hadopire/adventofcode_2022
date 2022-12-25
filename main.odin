@@ -15,7 +15,7 @@ result_t :: union {
 };
 
 run :: proc(day: string, procedure: day_proc, iter: int = 1) -> f64 {
-    filename: string = strings.concatenate({day, ".txt"});
+    filename: string = strings.concatenate({"./inputs/", day, ".txt"});
     defer delete(filename)
 
     content, ok := os.read_entire_file(filename); 
